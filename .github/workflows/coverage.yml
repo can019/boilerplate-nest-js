@@ -49,12 +49,12 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn install
 
-      - name: Run unit test ✅
+      - name: Run e2e test ✅
         uses: ArtiomTr/jest-coverage-report-action@v2
         id: coverage
         with:
             package-manager: yarn
-            test-script: yarn test:api:e2e:cov
+            test-script: yarn test:e2e:cov
             skip-step: install
             output: comment, report-markdown
             custom-title: e2e-test > local
