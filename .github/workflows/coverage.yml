@@ -54,7 +54,7 @@ jobs:
         id: coverage
         with:
             package-manager: yarn
-            test-script: yarn test:e2e:cov
+            test-script: test:e2e:cov
             skip-step: install
             output: comment, report-markdown
             custom-title: e2e-test > local
