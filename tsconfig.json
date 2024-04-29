@@ -16,6 +16,7 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true, // Commonjs 모듈을 es6 모듈로 Import 할 때 발생하는 에러 방지
   }
 }
