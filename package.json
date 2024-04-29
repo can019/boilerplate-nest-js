@@ -16,8 +16,8 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "lint:fix": "yarn lint --fix",
     "test": "jest",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
-    "test:e2e:cov": "jest --config ./test/jest-e2e.json --ci --json --coverage --testLocationInResults --outputFile=report.json --reporters=default --reporters=jest-junit --runInBand",
+    "test:api:e2e": "jest --config ./apps/api/test/jest-e2e.json",
+    "test:api:e2e:cov": "jest --config ./apps/api/test/jest-e2e.json --ci --json --coverage --testLocationInResults --outputFile=report.json --reporters=default --reporters=jest-junit --runInBand",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
@@ -78,5 +78,7 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "main": "index.js",
+  "repository": "git@github.com:can019/nest-js.git"
 }
