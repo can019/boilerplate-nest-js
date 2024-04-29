@@ -13,7 +13,7 @@ on:
       # - '!master'   # excludes master
 
 jobs:
-  e2e-local:
+  e2e-api-local:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     # strategy:
@@ -54,7 +54,7 @@ jobs:
         id: coverage
         with:
             package-manager: yarn
-            test-script: yarn test:e2e:cov
+            test-script: yarn test:api:e2e:cov
             skip-step: install
             output: comment, report-markdown
             custom-title: e2e-test > local
