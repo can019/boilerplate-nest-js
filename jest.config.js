@@ -1,0 +1,25 @@
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
+  },
+  rootDir: '.',
+  testRegex: '.*\\.spec\\.ts$',
+  collectCoverageFrom: ['**/*.(t|j)s'],
+  coveragePathIgnorePatterns: [
+    'node_modules',
+    'test-config',
+    'interfaces',
+    'main.ts',
+    '.module.ts',
+    '.e2e-spec.ts',
+    '.mock.ts',
+  ],
+  coverageDirectory: './coverage',
+  roots: ['<rootDir>/src/'],
+  moduleFileExtensions: ['js', 'json', 'ts'],
+  transformIgnorePatterns: ['^.+\\.js$'],
+  clearMocks: true,
+  verbose: true,
+};
