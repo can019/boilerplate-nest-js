@@ -33,10 +33,13 @@
     "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/typeorm": "^10.0.2",
     "nest-winston": "^1.9.4",
+    "pg": "^8.11.5",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
+    "typeorm": "^0.3.20",
     "winston": "^3.13.0",
     "winston-daily-rotate-file": "^5.0.0"
   },
