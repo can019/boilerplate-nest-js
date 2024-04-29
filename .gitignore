@@ -6,9 +6,11 @@
 logs
 *.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+undefined/error
 
 # OS
 .DS_Store
@@ -16,6 +18,8 @@ lerna-debug.log*
 # Tests
 /coverage
 /.nyc_output
+report.json
+jest-junit.xml
 
 # IDEs and editors
 /.idea
@@ -32,3 +36,6 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# env
+.env.production
