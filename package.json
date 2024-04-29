@@ -1,8 +1,8 @@
 {
   "name": "project",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "boilerplate",
+  "author": "jys01012@gmail.com",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
