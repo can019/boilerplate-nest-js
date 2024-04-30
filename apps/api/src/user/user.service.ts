@@ -15,4 +15,9 @@ export class UserService {
     });
     return user;
   }
+  public async delete(id: string) {
+    const user = new User();
+    user.id = id;
+    return await this.dataSource.manager.delete(User, { id });
+  }
 }

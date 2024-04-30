@@ -61,6 +61,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "28.0.3",
     "jest-junit": "^16.0.0",
+    "jest-mock-extended": "^3.0.6",
     "prettier": "^2.3.2",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",
