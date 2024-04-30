@@ -18,5 +18,31 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true, // Commonjs 모듈을 es6 모듈로 Import 할 때 발생하는 에러 방지
+    "paths": {
+      "@api": [
+        "./apps/api"
+      ],
+      "@api/*": [
+        "./apps/api/*"
+      ],
+      "@admin": [
+        "./apps/admin"
+      ],
+      "@admin/*": [
+        "./apps/admin/*"
+      ],
+      "@libs/typeorm": [
+        "./libs/typeorm/src"
+      ],
+      "@libs/typeorm/*": [
+        "./libs/typeorm/src/*"
+      ],
+      "@libs/utils": [
+        "./libs/utils/src"
+      ],
+      "@libs/utils/*": [
+        "./libs/utils/src/*"
+      ]
+    }
   }
 }
