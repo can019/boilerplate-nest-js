@@ -3,10 +3,11 @@ on:
   push:
     branches:
       - 'develop'
-  pull_request:
+  pull_request_target:
     branches:
       - 'develop'
       - 'migration'
+      - 'main'
       # - '*'         # matches every branch that doesn't contain a '/'
       # - '*/*'       # matches every branch containing a single '/'
       # - '**'        # matches every branch
