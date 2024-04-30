@@ -13,6 +13,70 @@ on:
       # - '!master'   # excludes master
 
 jobs:
+  unit-api-local:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    # strategy:
+    #   matrix:
+    #     node: [ 14, 16, 18 ]
+
+    # name: Jest in Node ${{ matrix.node }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # ${{ matrix.node }}
+
+      - name: Set up postgre docker
+        run: yarn docker:local local-db
+
+      - name: Check docker
+        run: docker ps
+
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          # node_modules를 캐싱
+          path: '**/node_modules'
+          # cache를 무효화하를 결정하는 기준은 의존성이 변경되면 함께 변경되는 파일인 package-lock.json을 기준으로 함.
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+          # key가 유효하지 않은 경우 runner의 운영체제 값과 node라는 suffix를 key로 복구.
+          # 결과적으로 package-lock.json이 변경되지 않았다면 캐싱된 node_modules를 사용.
+          # 만약 복구될 캐시가 없다면 아래에서 사용할 cache-hit는 false.
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        # 이전의 cache가 없다면 의존성을 설치.
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn install
+
+      - name: wait for db
+        run: export NODE_ENV=local && yarn wait-db
+
+      - name: Run unit test ✅
+        uses: ArtiomTr/jest-coverage-report-action@v2
+        id: coverage
+        with:
+          package-manager: yarn
+          test-script: yarn test:api:unit:cov
+          skip-step: install
+          output: comment, report-markdown
+          custom-title: api-uni-test > local
+
+      - name: Detailed report with junit
+        uses: dorny/test-reporter@v1
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: test-results
+          path: jest-junit.xml
+          fail-on-error: 'false'
+          reporter: jest-junit # Format of test results
+          token: ${{ secrets.GITHUB_TOKEN }}
   e2e-api-local:
     timeout-minutes: 10
     runs-on: ubuntu-latest
@@ -66,7 +130,7 @@ jobs:
           test-script: yarn test:api:e2e:cov
           skip-step: install
           output: comment, report-markdown
-          custom-title: e2e-test > local
+          custom-title: api-e2e-test > local
 
       - name: Detailed report with junit
         uses: dorny/test-reporter@v1
