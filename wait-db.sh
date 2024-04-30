@@ -1,4 +1,6 @@
 # !bin/bash
+# jys01012@gmail.com
+
 # Check if database ready
 MAX_TRY=8
 CURRENT_TRY=0
@@ -54,15 +56,30 @@ fi
 echo -e "\033[32mSuccessfully load enviroment variables\033[0m";
 
 # POSTGRE ping test
-# until echo '\q' | docker exec $DB_CONTAINER_NAME POSTGRE -h "${DB_HOST}" -P"${DB_PORT}" -u"${DB_USER}" -p"${DB_PASSWORD}" ${DB_DATABASE}> /dev/null 2>&1; do
+until echo '\q' | docker exec "${DB_CONTAINER_NAME}" pg_isready -h "${DB_PURE_HOST}" -p "${DB_PORT}" -U "${DB_USER}" -d "${DB_DATABASE}"> /dev/null 2>&1; do
+    if [ $CURRENT_TRY -eq $MAX_TRY ]; then
+        echo -e "\033[31mPOSTGRE is unavailable - Abort\033[0m";
+        exit -1;
+    else
+        >&2 echo -e "\033[33mPOSTGRE is unavailable - sleeping 5sec\033[0m";
+    sleep 5
+    fi
+    
+    CURRENT_TRY=$((CURRENT_TRY+1))
+done
+
+echo -e "\033[32mPOSTGRE is ready\033[0m";
+
+# # Mysql ping test
+# until echo '\q' | docker exec $DB_CONTAINER_NAME mysql -h "${DB_HOST}" -P"${DB_PORT}" -u"${DB_USER}" -p"${DB_PASSWORD}" ${DB_DATABASE}> /dev/null 2>&1; do
 #     if [ $CURRENT_TRY -eq $MAX_TRY ]; then
-#         echo -e "\033[31mPOSTGRE is unavailable - Abort\033[0m";
+#         echo -e "\033[31mMYSQL is unavailable - Abort\033[0m";
 #         exit -1;
 #     else
-#         >&2 echo -e "\033[33mPOSTGRE is unavailable - sleeping 5sec\033[0m";
+#         >&2 echo -e "\033[33mMySQL is unavailable - sleeping 5sec\033[0m";
 #     sleep 5
 #     fi
     
 #     CURRENT_TRY=$((CURRENT_TRY+1))
 # done
-echo -e "\033[32mPOSTGRE is ready\033[0m";
+# echo -e "\033[32mMYSQL is ready\033[0m";
