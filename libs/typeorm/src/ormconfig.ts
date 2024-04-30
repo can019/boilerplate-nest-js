@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmLogger } from '@libs/typeorm/utils/typeorm-logger';
+import { TypeOrmLogger } from '@libs/typeorm/utils/logger/typeorm-logger';
 import dotenv from 'dotenv';
 import { DataSourceOptions } from 'typeorm';
 
