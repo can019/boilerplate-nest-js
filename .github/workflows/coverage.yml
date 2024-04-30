@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - 'develop'
-  pull_request_target:
+  pull_request:
     branches:
       - 'develop'
       - 'migration'
@@ -17,6 +17,9 @@ jobs:
   unit-api-local:
     timeout-minutes: 10
     runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
     # strategy:
     #   matrix:
     #     node: [ 14, 16, 18 ]
