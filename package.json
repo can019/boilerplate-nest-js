@@ -9,7 +9,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start:api:local": "export NODE_ENV=local && nest start api --watch",
+    "start:api:local": "export NODE_ENV=local && yarn docker:local local-db && yarn wait-db && nest start api --watch",
     "docker:local": "docker-compose -f docker-compose.local.yml --env-file .env.local up --build -d",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
     "lint:fix": "yarn lint --fix",
@@ -18,7 +18,8 @@
     "test:api:e2e:cov": "jest --config ./apps/api/test/jest-e2e.json --ci --json --coverage --testLocationInResults --outputFile=report.json --reporters=default --reporters=jest-junit --runInBand",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "wait-db": "bash ./wait-db.sh"
   },
   "jest-junit": {
     "outputName": "jest-junit.xml",
