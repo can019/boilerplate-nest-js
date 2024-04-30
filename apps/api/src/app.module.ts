@@ -3,6 +3,7 @@ import { AppController } from '@api/src/app.controller';
 import { AppService } from '@api/src/app.service';
 import { LoggerModule } from '@libs/utils/logger/logger.module';
 import { ConfigModule } from '@nestjs/config';
+import { getOrmDynamicModule } from '@libs/typeorm/ormconfig';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -14,6 +15,7 @@ import { ConfigModule } from '@nestjs/config';
           ? '.env.development'
           : '.env.local',
     }),
+    getOrmDynamicModule(),
     LoggerModule,
   ],
   controllers: [AppController],
