@@ -69,7 +69,7 @@ jobs:
           test-script: yarn test:api:unit:cov
           skip-step: install
           output: comment, report-markdown
-          custom-title: api-uni-test > local
+          custom-title: api-unit-test > local
 
       - name: Detailed report with junit
         uses: dorny/test-reporter@v1
