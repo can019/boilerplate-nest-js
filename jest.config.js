@@ -24,7 +24,8 @@ module.exports = {
   clearMocks: true,
   verbose: true,
   moduleNameMapper: {
-    '^@libs/src(|/.*)$': '<rootDir>/libs/src/$1',
+    '^@libs/typeorm(|/.*)$': '<rootDir>/libs/typeorm/src/$1',
+    '^@libs/utils(|/.*)$': '<rootDir>/libs/utils/src/$1',
     '^@app/test(|/.*)$': '<rootDir>/libs/test/src/$1',
     '^@api/test(|/.*)$': '<rootDir>/apps/api/test/$1',
     '^@admin/src(|/.*)$': '<rootDir>/apps/admin/src/$1',
