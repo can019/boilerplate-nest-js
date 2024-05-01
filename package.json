@@ -22,7 +22,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "wait-db": "bash ./wait-db.sh",
-    "preseed":"yarn build",
+    "preseed": "yarn build",
     "seed:local": "export NODE_ENV=local && ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d dist/libs/typeorm/src/seed/data-source.js"
   },
   "jest-junit": {
@@ -39,6 +39,7 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^10.0.2",
+    "express-rate-limit": "^7.2.0",
     "nest-winston": "^1.9.4",
     "pg": "^8.11.5",
     "reflect-metadata": "^0.1.13",
