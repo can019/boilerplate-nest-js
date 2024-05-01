@@ -7,7 +7,6 @@ on:
     branches:
       - 'develop'
       - 'migration'
-      - 'main'
       # - '*'         # matches every branch that doesn't contain a '/'
       # - '*/*'       # matches every branch containing a single '/'
       # - '**'        # matches every branch
@@ -17,8 +16,6 @@ jobs:
   unit-api-local:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-
-    permissions: write-all
     # strategy:
     #   matrix:
     #     node: [ 14, 16, 18 ]
@@ -69,7 +66,7 @@ jobs:
           test-script: yarn test:api:unit:cov
           skip-step: install
           output: comment, report-markdown
-          custom-title: api-unit-test > local
+          custom-title: api-uni-test > local
 
       - name: Detailed report with junit
         uses: dorny/test-reporter@v1
@@ -83,7 +80,6 @@ jobs:
   e2e-api-local:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    permissions: write-all
     # strategy:
     #   matrix:
     #     node: [ 14, 16, 18 ]

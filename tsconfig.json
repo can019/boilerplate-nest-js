@@ -31,12 +31,18 @@
       "@admin/*": [
         "./apps/admin/*"
       ],
-      "@libs": [
-        "./libs/src"
+      "@libs/typeorm": [
+        "./libs/typeorm/src"
       ],
-      "@libs/*": [
-        "./libs/src/*"
+      "@libs/typeorm/*": [
+        "./libs/typeorm/src/*"
       ],
+      "@libs/utils": [
+        "./libs/utils/src"
+      ],
+      "@libs/utils/*": [
+        "./libs/utils/src/*"
+      ]
     }
   }
 }
