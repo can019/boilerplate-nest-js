@@ -21,7 +21,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "wait-db": "bash ./wait-db.sh"
+    "wait-db": "bash ./wait-db.sh",
+    "preseed":"yarn build",
+    "seed:local": "export NODE_ENV=local && ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d dist/libs/typeorm/src/seed/data-source.js"
   },
   "jest-junit": {
     "outputName": "jest-junit.xml",
@@ -69,6 +71,7 @@
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
     "tsconfig-paths": "4.0.0",
+    "typeorm-extension": "^3.5.1",
     "typescript": "^4.3.5"
   },
   "jest": {

@@ -2,8 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from '@api/src/app.controller';
 import { AppService } from '@api/src/app.service';
 import { LoggerModule } from '@libs/utils/logger/logger.module';
-import { ConfigModule } from '@nestjs/config';
-import { getOrmDynamicModule } from '@libs/typeorm/ormconfig';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmLogger } from '@libs/typeorm/utils/logger/typeorm-logger';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { setOrmConfig } from '@libs/typeorm/ormconfig';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -15,7 +17,14 @@ import { getOrmDynamicModule } from '@libs/typeorm/ormconfig';
           ? '.env.development'
           : '.env.local',
     }),
-    getOrmDynamicModule(),
+    TypeOrmModule.forRootAsync({
+      // name: connectionName,
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        return { ...setOrmConfig(configService), logger: new TypeOrmLogger() };
+      },
+      inject: [ConfigService],
+    }),
     LoggerModule,
   ],
   controllers: [AppController],
