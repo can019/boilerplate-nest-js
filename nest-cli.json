@@ -18,13 +18,22 @@
         "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     },
-    "libs": {
+    "typeorm": {
       "type": "library",
-      "root": "libs",
+      "root": "libs/typeorm",
       "entryFile": "index",
-      "sourceRoot": "libs/src",
+      "sourceRoot": "libs/typeorm/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/tsconfig.lib.json"
+        "tsConfigPath": "libs/typeorm/tsconfig.lib.json"
+      }
+    },
+    "utils": {
+      "type": "library",
+      "root": "libs/utils",
+      "entryFile": "index",
+      "sourceRoot": "libs/utils/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/utils/tsconfig.lib.json"
       }
     }
   }
