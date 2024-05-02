@@ -1,4 +1,4 @@
-name: "Run Eslint and Build"
+name: "Run Eslint"
 on: [push]
 
 jobs:
