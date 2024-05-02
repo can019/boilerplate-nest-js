@@ -3,7 +3,7 @@ name: Docs checker
 on:
   pull_request:
     branches:
-      - develop
+      - main
 
 jobs:
   Check-docs-changed:
