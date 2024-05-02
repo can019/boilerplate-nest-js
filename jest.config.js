@@ -5,7 +5,6 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest',
   },
   rootDir: '.',
-  testRegex: '.*\\.spec\\.ts$',
   collectCoverageFrom: ['**/*.(t|j)s'],
   coveragePathIgnorePatterns: [
     'node_modules',
@@ -23,12 +22,12 @@ module.exports = {
   setupFiles: ['<rootDir>/libs/utils/src/test/testSetUp.ts'],
   clearMocks: true,
   verbose: true,
-  moduleNameMapper: {
-    '^@libs/src(|/.*)$': '<rootDir>/libs/src/$1',
-    '^@app/test(|/.*)$': '<rootDir>/libs/test/src/$1',
-    '^@api/test(|/.*)$': '<rootDir>/apps/api/test/$1',
-    '^@admin/src(|/.*)$': '<rootDir>/apps/admin/src/$1',
-    '^@admin/test(|/.*)$': '<rootDir>/apps/admin/test/$1',
-    '^@api/src(|/.*)$': '<rootDir>/apps/api/src/$1',
-  },
+  // moduleNameMapper: {
+  //   '^@libs/src(|/.*)$': '<rootDir>/libs/src/$1',
+  //   '^@app/test(|/.*)$': '<rootDir>/libs/test/src/$1',
+  //   '^@api/test(|/.*)$': '<rootDir>/apps/api/test/$1',
+  //   '^@admin/src(|/.*)$': '<rootDir>/apps/admin/src/$1',
+  //   '^@admin/test(|/.*)$': '<rootDir>/apps/admin/test/$1',
+  //   '^@api/src(|/.*)$': '<rootDir>/apps/api/src/$1',
+  // },
 };
