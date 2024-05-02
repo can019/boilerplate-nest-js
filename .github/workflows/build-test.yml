@@ -1,5 +1,13 @@
 name: "Build test"
-on: [push]
+on:
+  push:
+    branches:
+      - 'develop'
+  pull_request:
+    branches:
+      - 'develop'
+      - 'migration'
+      - 'main'
 
 jobs:
   Build api:
