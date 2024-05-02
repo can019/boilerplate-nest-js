@@ -5,5 +5,17 @@
     "outDir": "../../dist/apps/admin",
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"],
+  "@admin": [
+    "./apps/admin"
+  ],
+  "@admin/*": [
+    "./apps/admin/*"
+  ],
+  "@libs": [
+    "./libs/src"
+  ],
+  "@libs/*": [
+    "./libs/src/*"
+  ],
 }

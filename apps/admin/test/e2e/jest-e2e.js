@@ -1,16 +1,29 @@
-{
-  "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": "../../../../",
-  "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
-  "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
+module.exports = {
+  preset: 'ts-jest',
+  globals: {
+    'ts-jest': {
+      tsConfig: './apps/admin/tsconfig.app.json',
+    },
   },
-  "roots": ["<rootDir>/apps/", "<rootDir>/libs/"],
-  "moduleNameMapper": {
-    "^@libs(|/.*)$": "<rootDir>/libs/src/$1",
-    "^@app/test(|/.*)$": "<rootDir>/libs/test/src/$1",
-    "^@admin/test(|/.*)$": "<rootDir>/apps/admin/test/$1",
-    "^@admin/src(|/.*)$": "<rootDir>/apps/admin/src/$1"
-  }
-}
+  testEnvironment: 'node',
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
+  },
+  rootDir: '../../../../',
+  collectCoverageFrom: ['**/*.(t|j)s'],
+  coveragePathIgnorePatterns: ['node_modules'], // full path를 적어주어야 함. dir단위도 좋음.
+  coverageDirectory: './coverage',
+  roots: ['<rootDir>/apps/admin', '<rootDir>/libs/'],
+  moduleFileExtensions: ['js', 'json', 'ts'],
+  transformIgnorePatterns: ['^.+\\.js$'],
+  testMatch: ['**/admin/test/e2e/**/*.e2e-spec.ts'],
+  setupFiles: ['<rootDir>/libs/src/utils/test/testSetUp.ts'],
+  clearMocks: true,
+  verbose: true,
+  moduleNameMapper: {
+    '^@libs(|/.*)$': '<rootDir>/libs/src/$1',
+    '^@app/test(|/.*)$': '<rootDir>/libs/test/src/$1',
+    '^@admin/src(|/.*)$': '<rootDir>/apps/admin/src/$1',
+    '^@admin/test(|/.*)$': '<rootDir>/apps/admin/test/$1',
+  },
+};

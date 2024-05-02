@@ -1,4 +1,4 @@
-import { AppController } from '@api/src/app.controller';
+import { AppController } from '@admin/src/app.controller';
 import { AppModule } from '@admin/src/app.module';
 import { AppService } from '@admin/src/app.service';
 import { Test, TestingModule } from '@nestjs/testing';
