@@ -15,7 +15,7 @@ on:
       # - '!master'   # excludes master
 
 jobs:
-  check-file-changes:
+  check-file-changes-between-pr-target-branch:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
@@ -35,12 +35,10 @@ jobs:
           for file in ${ADDED_FILES}; do
             echo "$file was added"
           done
-
-          echo 'modified test2'
           exit 1
 
   unit-api-local:
-    needs: check-file-changes
+    needs: check-file-changes-between-pr-target-branch
     timeout-minutes: 10
     runs-on: ubuntu-latest
 
@@ -107,7 +105,7 @@ jobs:
           reporter: jest-junit # Format of test results
           token: ${{ secrets.GITHUB_TOKEN }}
   e2e-api-local:
-    needs: check-file-changes
+    needs: check-file-changes-between-pr-target-branch
     timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions: write-all
