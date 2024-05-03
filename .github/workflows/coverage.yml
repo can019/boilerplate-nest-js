@@ -59,7 +59,7 @@ jobs:
           done
 
           echo "modified가 발생해야한다."
-          git log --pretty=oneline
+          git log -2 --pretty=oneline
           exit 1
 
   unit-api-local:
