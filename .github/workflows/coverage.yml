@@ -14,7 +14,30 @@ on:
       # - '!master'   # excludes master
 
 jobs:
+  check-file-changes:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          fetch-depth: 0
+
+      - name: List all added files
+        env:
+          ADDED_FILES: ${{ steps.changed-files.outputs.all_changed_and_modified_files }}
+        run: |
+          for file in ${ADDED_FILES}; do
+            echo "$file was added"
+          done
+
+          exit 1
+
   unit-api-local:
+    needs: check-file-changes
     timeout-minutes: 10
     runs-on: ubuntu-latest
 
@@ -81,6 +104,7 @@ jobs:
           reporter: jest-junit # Format of test results
           token: ${{ secrets.GITHUB_TOKEN }}
   e2e-api-local:
+    needs: check-file-changes
     timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions: write-all
