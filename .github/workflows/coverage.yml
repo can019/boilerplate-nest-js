@@ -35,6 +35,7 @@ jobs:
             echo "$file was added"
           done
 
+          echo 'modified tesy'
           exit 1
 
   unit-api-local:
