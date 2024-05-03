@@ -25,7 +25,7 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: List all added files
         env:
@@ -35,7 +35,7 @@ jobs:
             echo "$file was added"
           done
 
-          echo 'modified tesy'
+          echo 'modified test2'
           exit 1
 
   unit-api-local:
