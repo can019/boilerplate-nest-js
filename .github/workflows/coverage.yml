@@ -44,9 +44,9 @@ jobs:
       pull-requests: read
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2 # 0 : 모든 히스토리, 1: 마지막 commit, 2: 마지막 2개 commit ...
-          # Pr을 연상태에서 push를 하면 merge commit이 마지막 commit, push한 commit아 마지막에서 2번째로 잡힌다.
+        # with:
+        #   fetch-depth: 2 # 0 : 모든 히스토리, 1: 마지막 commit, 2: 마지막 2개 commit ...
+        # Pr을 연상태에서 push를 하면 merge commit이 마지막 commit, push한 commit아 마지막에서 2번째로 잡힌다.
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v44
