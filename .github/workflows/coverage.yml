@@ -41,8 +41,15 @@ jobs:
             api:
               - apps/api/**
 
-            libs:
+            common:
               - libs/**
+              - .github/workflows/coverage.yml
+              - .env.local
+              - jest.config.js
+              - package.json
+              - nest-cli.json
+              - tsconfig.json
+              - docker-compose.local.yml
 
       - name: Get changed file between pr branch
         if: steps.changed-files-between-commit.outcome == 'failure'
@@ -57,25 +64,32 @@ jobs:
             api:
               - apps/api/**
 
-            libs:
+            common:
               - libs/**
+              - .github/workflows/coverage.yml
+              - .env.local
+              - jest.config.js
+              - package.json
+              - nest-cli.json
+              - tsconfig.json
+              - docker-compose.local.yml
           run: echo 'flag=true' >> $GITHUB_OUTPUT
 
       - name: Set run test flags
         id: check-modified
         env:
-          LIBS_ANY_MODIFED: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.libs_any_modified || steps.changed-files-between-pr-branch.outputs.libs_any_modified }}
-          LIBS_ANY_MODIFIED_FILES: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.libs_any_modified_files || steps.changed-files-between-pr-branch.outputs.libs_any_modified_files }}
+          COMMON_ANY_MODIFED: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.common_any_modified || steps.changed-files-between-pr-branch.outputs.common_any_modified }}
+          COMMON_ANY_MODIFIED_FILES: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.common_any_modified_files || steps.changed-files-between-pr-branch.outputs.common_any_modified_files }}
           API_ANY_MODIFIED: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.api_any_modified || steps.changed-files-between-pr-branch.outputs.api_any_modified }}
           API_ANY_MODIFIED_FILES: ${{ !steps.changed-files-between-pr-branch.outputs.flag &&  steps.changed-files-between-commit.outputs.api_any_modified_files || steps.changed-files-between-pr-branch.outputs.api_any_modified_files }}
           ADMIN_ANY_MODIFIED: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.admin_any_modified || steps.changed-files-between-pr-branch.outputs.admin_any_modified }}
           ADMIN_ANY_MODIFIED_FILES: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.admin_any_modified_files || steps.changed-files-between-pr-branch.outputs.admin_any_modified_files  }}
         run: |
-          echo ${LIBS_ANY_MODIFED}
-          if [ $LIBS_ANY_MODIFED  == "true" ]; then
+          echo ${COMMON_ANY_MODIFED}
+          if [ $COMMON_ANY_MODIFED  == "true" ]; then
             echo 'api-change=true' >> $GITHUB_OUTPUT
-            echo 'admin-chagne=true' >> $GITHUB_OUTPUT
-            echo "List all the files that have changed: $LIBS_ANY_MODIFIED_FILES"
+            echo 'admin-change=true' >> $GITHUB_OUTPUT
+            echo "List all the files that have changed: $COMMON_ANY_MODIFIED_FILES"
           else 
             if [ $API_ANY_MODIFIED == "true" ]; then
               echo 'api-change=true' >> $GITHUB_OUTPUT
