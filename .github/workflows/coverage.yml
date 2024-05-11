@@ -88,7 +88,7 @@ jobs:
           echo ${COMMON_ANY_MODIFED}
           if [ $COMMON_ANY_MODIFED  == "true" ]; then
             echo 'api-change=true' >> $GITHUB_OUTPUT
-            echo 'admin-chagne=true' >> $GITHUB_OUTPUT
+            echo 'admin-change=true' >> $GITHUB_OUTPUT
             echo "List all the files that have changed: $COMMON_ANY_MODIFIED_FILES"
           else 
             if [ $API_ANY_MODIFIED == "true" ]; then
