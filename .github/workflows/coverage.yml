@@ -20,6 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
+    outputs:
+      api-change: ${{ steps.api-change.outputs.apk-change }}
+      admin-change: ${{ steps.admin-change.outputs.change }}
+      libs-change: ${{ steps.libs-change.outputs.change }}
     steps:
       - uses: actions/checkout@v4
         # with:
@@ -40,32 +44,29 @@ jobs:
             libs:
               - libs/**
 
-      - name: Run step if libs files(s) change
-        if: steps.changed-files.outputs.libs_any_modified == 'true'
+      - name: Set run test flags
+        id: check-modified
         env:
-          LIBS_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.libs_any_modified }}
+          LIBS_ANY_MODIFED: ${{ steps.changed-files.outputs.libs_any_modified }}
+          LIBS_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.libs_any_modified_files }}
+          API_ANY_MODIFIED: ${{ steps.changed-files.outputs.api_any_modified }}
+          API_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.api_any_modified_files }}
+          ADMIN_ANY_MODIFIED: ${{ steps.changed-files.outputs.admin_any_modified }}
+          ADMIN_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.admin_any_modified_files }}
         run: |
-          echo "One or more libs file(s) changed"
-          echo "List all the files that have changed: $LIBS_ANY_MODIFIED_FILES"
-          echo "Run api, admin test"
-
-      - name: Run step if api files(s) change
-        if: steps.changed-files.outputs.api_any_modified == 'true'
-        env:
-          API_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.api_any_modified }}
-        run: |
-          echo "One or more libs file(s) changed"
-          echo "List all the files that have changed: $API_ANY_MODIFIED_FILES"
-          echo "Run api, admin test"
-
-      - name: Run step if admin files(s) change
-        if: steps.changed-files.outputs.admin_any_modified == 'true'
-        env:
-          ADMIN_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.admin_any_modified }}
-        run: |
-          echo "One or more libs file(s) changed"
-          echo "List all the files that have changed: $ADMIN_ANY_MODIFIED_FILES"
-          echo "Run api, admin test"
+          if [ "${{ LIBS_ANY_MODIFED }}" == "true" ]; then
+            echo 'api=true' >> $GITHUB_OUTPUT
+            echo 'admin=true' >> $GITHUB_OUTPUT
+            echo "List all the files that have changed: $LIBS_ANY_MODIFIED_FILES"
+          elif [ "${{ API_ANY_MODIFIED }}" == "true" ]; then
+            echo  echo 'api=true' >> $GITHUB_OUTPUT
+            echo "List all the files that have changed: $API_ANY_MODIFIED_FILES"
+          elif [ "${{ ADMIN_ANY_MODIFIED }}" == "true" ]; then
+            echo 'admin=true' >> $GITHUB_OUTPUT
+            echo "List all the files that have changed: $ADMIN_ANY_MODIFIED_FILES"
+          else
+            echo "Nothing"
+          fi
 
   check-file-changes-between-pr-target-branch:
     timeout-minutes: 10
@@ -93,34 +94,34 @@ jobs:
             libs:
               - libs/**
 
-      - name: Run step if libs files(s) change
-        if: steps.changed-files.outputs.libs_any_modified == 'true'
+      - name: Set run test flags
+        id: check-modified
         env:
-          LIBS_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.libs_any_modified }}
+          LIBS_ANY_MODIFED: ${{ steps.changed-files.outputs.libs_any_modified }}
+          LIBS_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.libs_any_modified_files }}
+          API_ANY_MODIFIED: ${{ steps.changed-files.outputs.api_any_modified }}
+          API_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.api_any_modified_files }}
+          ADMIN_ANY_MODIFIED: ${{ steps.changed-files.outputs.admin_any_modified }}
+          ADMIN_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.admin_any_modified_files }}
         run: |
-          echo "One or more libs file(s) changed"
-          echo "List all the files that have changed: $LIBS_ANY_MODIFIED_FILES"
-          echo "Run api, admin test"
+          if [ "${{ LIBS_ANY_MODIFED }}" == "true" ]; then
+            echo 'api=true' >> $GITHUB_OUTPUT
+            echo 'admin=true' >> $GITHUB_OUTPUT
+            echo "List all the files that have changed: $LIBS_ANY_MODIFIED_FILES"
+          elif [ "${{ API_ANY_MODIFIED }}" == "true" ]; then
+            echo  echo 'api=true' >> $GITHUB_OUTPUT
+            echo "List all the files that have changed: $API_ANY_MODIFIED_FILES"
+          elif [ "${{ ADMIN_ANY_MODIFIED }}" == "true" ]; then
+            echo 'admin=true' >> $GITHUB_OUTPUT
+            echo "List all the files that have changed: $ADMIN_ANY_MODIFIED_FILES"
+          else
+            echo "Nothing"
+          fi
 
-      - name: Run step if api files(s) change
-        if: steps.changed-files.outputs.api_any_modified == 'true'
-        env:
-          API_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.api_any_modified }}
-        run: |
-          echo "One or more libs file(s) changed"
-          echo "List all the files that have changed: $API_ANY_MODIFIED_FILES"
-          echo "Run api, admin test"
-
-      - name: Run step if admin files(s) change
-        if: steps.changed-files.outputs.admin_any_modified == 'true'
-        env:
-          ADMIN_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.admin_any_modified }}
-        run: |
-          echo "One or more libs file(s) changed"
-          echo "List all the files that have changed: $ADMIN_ANY_MODIFIED_FILES"
-          echo "Run api, admin test"
   unit-api-local:
-    needs: check-file-changes-between-current-branch-commit
+    needs: [check-file-changes-between-pr-target-branch, check-file-changes-between-current-branch-commit]
+    if: |
+      ${{ always() && (needs.check-file-changes-between-current-branch-commit.outputs.check-modified.api == 'true' || needs.check-file-changes-between-pr-target-branch.outputs.check-modified.api == 'true')}}
     timeout-minutes: 10
     runs-on: ubuntu-latest
 
@@ -188,15 +189,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   e2e-api-local:
-    needs: check-file-changes-between-current-branch-commit
+    needs: [check-file-changes-between-pr-target-branch, check-file-changes-between-current-branch-commit]
     timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions: write-all
-    # strategy:
-    #   matrix:
-    #     node: [ 14, 16, 18 ]
-
-    # name: Jest in Node ${{ matrix.node }}
+    if: |
+      ${{ always() && (needs.check-file-changes-between-current-branch-commit.outputs.check-modified.api == 'true' || needs.check-file-changes-between-pr-target-branch.outputs.check-modified.api == 'true')}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
