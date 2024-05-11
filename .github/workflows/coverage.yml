@@ -15,29 +15,7 @@ on:
       # - '!master'   # excludes master
 
 jobs:
-  check-file-changes-between-pr-target-branch:
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    steps:
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v44
-        # To compare changes between the current commit and the last pushed remote commit set `since_last_remote_commit: true`. e.g
-        with:
-          since_last_remote_commit: true
-
-      - name: List all added files
-        env:
-          ADDED_FILES: ${{ steps.changed-files.outputs.all_changed_and_modified_files }}
-        run: |
-          for file in ${ADDED_FILES}; do
-            echo "$file was added"
-          done
-
   check-file-changes-between-current-branch-commit:
-    needs: check-file-changes-between-pr-target-branch
     timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions:
@@ -52,19 +30,95 @@ jobs:
         uses: tj-actions/changed-files@v44
         with:
           since_last_remote_commit: true
+          files_yaml: |
+            admin:
+              - apps/admin/**
 
-      - name: List all added files
+            api:
+              - apps/api/**
+
+            libs:
+              - libs/**
+
+      - name: Run step if libs files(s) change
+        if: steps.changed-files.outputs.libs_any_modified == 'true'
         env:
-          ADDED_FILES: ${{ steps.changed-files.outputs.modified_files }}
+          LIBS_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.libs_any_modified }}
         run: |
-          for file in ${ADDED_FILES}; do
-            echo "$file was added"
-          done
+          echo "One or more libs file(s) changed"
+          echo "List all the files that have changed: $LIBS_ANY_MODIFIED_FILES"
+          echo "Run api, admin test"
 
-          echo "modified가 발생해야한다."
-          git log --pretty=oneline
-          exit 1
+      - name: Run step if api files(s) change
+        if: steps.changed-files.outputs.api_any_modified == 'true'
+        env:
+          API_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.api_any_modified }}
+        run: |
+          echo "One or more libs file(s) changed"
+          echo "List all the files that have changed: $API_ANY_MODIFIED_FILES"
+          echo "Run api, admin test"
 
+      - name: Run step if admin files(s) change
+        if: steps.changed-files.outputs.admin_any_modified == 'true'
+        env:
+          ADMIN_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.admin_any_modified }}
+        run: |
+          echo "One or more libs file(s) changed"
+          echo "List all the files that have changed: $ADMIN_ANY_MODIFIED_FILES"
+          echo "Run api, admin test"
+
+  check-file-changes-between-pr-target-branch:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    needs: [check-file-changes-between-current-branch-commit]
+    if: ${{ always() && (needs.check-file-changes-between-current-branch-commit.result == 'failure' )}}
+    permissions:
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files_yaml: |
+            admin:
+              - apps/admin/**
+
+            api:
+              - apps/api/**
+
+            libs:
+              - libs/**
+
+      - name: Run step if libs files(s) change
+        if: steps.changed-files.outputs.libs_any_modified == 'true'
+        env:
+          LIBS_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.libs_any_modified }}
+        run: |
+          echo "One or more libs file(s) changed"
+          echo "List all the files that have changed: $LIBS_ANY_MODIFIED_FILES"
+          echo "Run api, admin test"
+
+      - name: Run step if api files(s) change
+        if: steps.changed-files.outputs.api_any_modified == 'true'
+        env:
+          API_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.api_any_modified }}
+        run: |
+          echo "One or more libs file(s) changed"
+          echo "List all the files that have changed: $API_ANY_MODIFIED_FILES"
+          echo "Run api, admin test"
+
+      - name: Run step if admin files(s) change
+        if: steps.changed-files.outputs.admin_any_modified == 'true'
+        env:
+          ADMIN_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.admin_any_modified }}
+        run: |
+          echo "One or more libs file(s) changed"
+          echo "List all the files that have changed: $ADMIN_ANY_MODIFIED_FILES"
+          echo "Run api, admin test"
   unit-api-local:
     needs: check-file-changes-between-current-branch-commit
     timeout-minutes: 10
