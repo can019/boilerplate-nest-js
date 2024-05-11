@@ -8,13 +8,108 @@ on:
       - 'develop'
       - 'migration'
       - 'main'
+      - '**'
       # - '*'         # matches every branch that doesn't contain a '/'
       # - '*/*'       # matches every branch containing a single '/'
       # - '**'        # matches every branch
       # - '!master'   # excludes master
 
 jobs:
+  check-file-changes:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      api-change: ${{ steps.check-modified.outputs.api-change }}
+      admin-change: ${{ steps.check-modified.outputs.admin-change }}
+    steps:
+      - uses: actions/checkout@v4
+        # with:
+        #   fetch-depth: 2 # 0 : 모든 히스토리, 1: 마지막 commit, 2: 마지막 2개 commit ...
+        # Pr을 연상태에서 push를 하면 merge commit이 마지막 commit, push한 commit아 마지막에서 2번째로 잡힌다.
+      - name: Get changed files
+        id: changed-files-between-commit
+        uses: tj-actions/changed-files@v44
+        continue-on-error: true
+        with:
+          since_last_remote_commit: true
+          files_yaml: |
+            admin:
+              - apps/admin/**
+
+            api:
+              - apps/api/**
+
+            common:
+              - libs/**
+              - .github/workflows/coverage.yml
+              - .env.local
+              - jest.config.js
+              - package.json
+              - nest-cli.json
+              - tsconfig.json
+              - docker-compose.local.yml
+
+      - name: Get changed file between pr branch
+        if: steps.changed-files-between-commit.outcome == 'failure'
+        id: changed-files-between-pr-branch
+        uses: tj-actions/changed-files@v44
+        with:
+          since_last_remote_commit: false
+          files_yaml: |
+            admin:
+              - apps/admin/**
+
+            api:
+              - apps/api/**
+
+            common:
+              - libs/**
+              - .github/workflows/coverage.yml
+              - .env.local
+              - jest.config.js
+              - package.json
+              - nest-cli.json
+              - tsconfig.json
+              - docker-compose.local.yml
+          run: echo 'flag=true' >> $GITHUB_OUTPUT
+
+      - name: Set run test flags
+        id: check-modified
+        env:
+          COMMON_ANY_MODIFED: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.common_any_modified || steps.changed-files-between-pr-branch.outputs.common_any_modified }}
+          COMMON_ANY_MODIFIED_FILES: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.common_any_modified_files || steps.changed-files-between-pr-branch.outputs.common_any_modified_files }}
+          API_ANY_MODIFIED: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.api_any_modified || steps.changed-files-between-pr-branch.outputs.api_any_modified }}
+          API_ANY_MODIFIED_FILES: ${{ !steps.changed-files-between-pr-branch.outputs.flag &&  steps.changed-files-between-commit.outputs.api_any_modified_files || steps.changed-files-between-pr-branch.outputs.api_any_modified_files }}
+          ADMIN_ANY_MODIFIED: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.admin_any_modified || steps.changed-files-between-pr-branch.outputs.admin_any_modified }}
+          ADMIN_ANY_MODIFIED_FILES: ${{ !steps.changed-files-between-pr-branch.outputs.flag && steps.changed-files-between-commit.outputs.admin_any_modified_files || steps.changed-files-between-pr-branch.outputs.admin_any_modified_files  }}
+        run: |
+          echo ${COMMON_ANY_MODIFED}
+          if [ $COMMON_ANY_MODIFED  == "true" ]; then
+            echo 'api-change=true' >> $GITHUB_OUTPUT
+            echo 'admin-change=true' >> $GITHUB_OUTPUT
+            echo "List all the files that have changed: $COMMON_ANY_MODIFIED_FILES"
+          else 
+            if [ $API_ANY_MODIFIED == "true" ]; then
+              echo 'api-change=true' >> $GITHUB_OUTPUT
+              echo "List all the files that have changed: $API_ANY_MODIFIED_FILES"
+            fi
+            if [ $ADMIN_ANY_MODIFIED == "true" ]; then
+              echo 'admin-change=true' >> $GITHUB_OUTPUT
+              echo "List all the files that have changed: $ADMIN_ANY_MODIFIED_FILES"
+            else
+              echo "Nothing"
+            fi
+          fi
+      - name: Logging github vars
+        run: |
+          echo ${{ steps.check-modified.outputs.api-change }}
+          echo ${{ steps.check-modified.outputs.admin-change }}
+
   unit-api-local:
+    needs: [check-file-changes]
+    if: ${{ needs.check-file-changes.outputs.api-change == 'true' }}
     timeout-minutes: 10
     runs-on: ubuntu-latest
 
@@ -80,15 +175,13 @@ jobs:
           fail-on-error: 'false'
           reporter: jest-junit # Format of test results
           token: ${{ secrets.GITHUB_TOKEN }}
+
   e2e-api-local:
+    needs: [check-file-changes]
     timeout-minutes: 10
     runs-on: ubuntu-latest
     permissions: write-all
-    # strategy:
-    #   matrix:
-    #     node: [ 14, 16, 18 ]
-
-    # name: Jest in Node ${{ matrix.node }}
+    if: ${{ needs.check-file-changes.outputs.api-change == 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -156,3 +249,28 @@ jobs:
     #   env:
     #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URI }} # required
     #   if: always() # Pick up events even if the job fails or is canceled.
+  e2e-admin-local:
+    needs: [check-file-changes]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions: write-all
+    if: ${{ needs.check-file-changes.outputs.admin-change == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: test
+        run: echo "dummy"
+
+  unit-admin-local:
+    needs: [check-file-changes]
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions: write-all
+    if: ${{ needs.check-file-changes.outputs.admin-change == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: test
+        run: echo "dummy"
