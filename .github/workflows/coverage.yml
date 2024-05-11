@@ -54,14 +54,14 @@ jobs:
           ADMIN_ANY_MODIFIED: ${{ steps.changed-files.outputs.admin_any_modified }}
           ADMIN_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.admin_any_modified_files }}
         run: |
-          if [ "${{ github.env.LIBS_ANY_MODIFED }}" == "true" ]; then
+          if [ $LIBS_ANY_MODIFED  == "true" ]; then
             echo 'api=true' >> $GITHUB_OUTPUT
             echo 'admin=true' >> $GITHUB_OUTPUT
             echo "List all the files that have changed: $LIBS_ANY_MODIFIED_FILES"
-          elif [ "${{ github.env.API_ANY_MODIFIED }}" == "true" ]; then
+          elif [ $API_ANY_MODIFIED == "true" ]; then
             echo  echo 'api=true' >> $GITHUB_OUTPUT
             echo "List all the files that have changed: $API_ANY_MODIFIED_FILES"
-          elif [ "${{ github.env.ADMIN_ANY_MODIFIED }}" == "true" ]; then
+          elif [ $ADMIN_ANY_MODIFIED == "true" ]; then
             echo 'admin=true' >> $GITHUB_OUTPUT
             echo "List all the files that have changed: $ADMIN_ANY_MODIFIED_FILES"
           else
@@ -104,14 +104,14 @@ jobs:
           ADMIN_ANY_MODIFIED: ${{ steps.changed-files.outputs.admin_any_modified }}
           ADMIN_ANY_MODIFIED_FILES: ${{ steps.changed-files-yaml.outputs.admin_any_modified_files }}
         run: |
-          if [ "${{ github.env.LIBS_ANY_MODIFED }}" == "true" ]; then
+          if [ $LIBS_ANY_MODIFED  == "true" ]; then
             echo 'api=true' >> $GITHUB_OUTPUT
             echo 'admin=true' >> $GITHUB_OUTPUT
             echo "List all the files that have changed: $LIBS_ANY_MODIFIED_FILES"
-          elif [ "${{ github.env.API_ANY_MODIFIED }}" == "true" ]; then
+          elif [ $API_ANY_MODIFIED == "true" ]; then
             echo  echo 'api=true' >> $GITHUB_OUTPUT
             echo "List all the files that have changed: $API_ANY_MODIFIED_FILES"
-          elif [ "${{ github.env.ADMIN_ANY_MODIFIED }}" == "true" ]; then
+          elif [ $ADMIN_ANY_MODIFIED == "true" ]; then
             echo 'admin=true' >> $GITHUB_OUTPUT
             echo "List all the files that have changed: $ADMIN_ANY_MODIFIED_FILES"
           else
