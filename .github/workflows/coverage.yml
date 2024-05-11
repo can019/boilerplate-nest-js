@@ -66,6 +66,13 @@ jobs:
 
             common:
               - libs/**
+              - .github/workflows/coverage.yml
+              - .env.local
+              - jest.config.js
+              - package.json
+              - nest-cli.json
+              - tsconfig.json
+              - docker-compose.local.yml
           run: echo 'flag=true' >> $GITHUB_OUTPUT
 
       - name: Set run test flags
